@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caja de Pandora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="Style.css">
+
+</head>
+<body>
+
+  <img src="Media/Imagenes/logo_sin_apuro-10.png" alt="Sin apuro" class="logo-img">
+
+  <h1>Caja de <span class="hi">Pandora</span></h1>
+
+  <div class="stage" id="stage">
+    <div class="burst"></div>
+    <div class="particles" id="particles"></div>
+
+    <div class="card" id="card">
+     <!-- <span class="tag">Te tocó</span>-->
+      <div class="prompt" id="prompt">—</div>
+    </div>
+
+    <div class="box">
+      <div class="box-lid"></div>
+      <div class="box-body">
+        <div class="studs">
+          <div class="stud" style="left:10px; top:14px;"></div>
+          <div class="stud" style="right:10px; top:14px;"></div>
+          <div class="stud" style="left:10px; bottom:12px;"></div>
+          <div class="stud" style="right:10px; bottom:12px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="action" id="btn">Abrir la caja</button>
+
+<script>
+  const consignas = [
+    "Una canción que defina tu juventud",
+    "Un artista de la escena actual",
+    "Una película argentina que te guste mucho",
+    "Un director/a de cine"
+  ];
+
+  let remaining = [...consignas];
+  const stage = document.getElementById('stage');
+  const card = document.getElementById('card');
+  const promptEl = document.getElementById('prompt');
+  const btn = document.getElementById('btn');
+  const particlesWrap = document.getElementById('particles');
+
+  function spawnParticles(){
+    particlesWrap.innerHTML = '';
+    const n = 14;
+    for(let i=0;i<n;i++){
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const dx = (Math.random()-0.5) * 160;
+      p.style.setProperty('--dx', dx + 'px');
+      p.style.left = (Math.random()*40 - 20) + 'px';
+      p.style.animationDelay = (Math.random()*0.3) + 's';
+      particlesWrap.appendChild(p);
+    }
+  }
+
+  function shuffleReveal(finalText){
+    let ticks = 0;
+    const maxTicks = 14;
+    const interval = setInterval(() => {
+      const randomPick = consignas[Math.floor(Math.random()*consignas.length)];
+      promptEl.textContent = randomPick;
+      ticks++;
+      if(ticks >= maxTicks){
+        clearInterval(interval);
+        promptEl.textContent = finalText;
+      }
+    }, 65);
+  }
+
+  function openBox(){
+    // si ya salieron todas, vuelven a estar disponibles
+    if(remaining.length === 0){
+      remaining = [...consignas];
+    }
+
+    btn.disabled = true;
+    card.classList.remove('show');
+    stage.classList.remove('open');
+
+    // force reflow so the closing/reset transition can replay
+    void stage.offsetWidth;
+
+    const idx = Math.floor(Math.random() * remaining.length);
+    const chosen = remaining.splice(idx, 1)[0];
+
+    stage.classList.add('open');
+    spawnParticles();
+
+    setTimeout(() => {
+      card.classList.add('show');
+      shuffleReveal(chosen);
+    }, 420);
+
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = 'Cerrar y abrir otra vez';
+    }, 1500);
+  }
+
+  btn.addEventListener('click', openBox);
+</script>
+
+</body>
+</html>
