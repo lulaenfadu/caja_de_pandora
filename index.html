@@ -43,11 +43,14 @@
 
 <script>
   const consignas = [
-    "Cande Tinelli",
-    "Un personaje que te gustaría interpretar",
-    "'Que peligroso. Que triste'",
+    "Lucha Aimar",
+    "Feminismo",
+    "Película preferida",
     "¿Maradona o Messi?",
-    //"Un/a artista de la escena actual"
+    "Una hora más en el club, una hora menos en la calle",
+    "Meritocracia",
+    "Un disco que estés escuchando mucho últimamente",
+    "Santa Bárbara",
   ];
 
   let remaining = [...consignas];
@@ -116,6 +119,12 @@
   }
 
   btn.addEventListener('click', openBox);
+
+  document.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' && !btn.disabled){
+        openBox();
+      }
+  });
 </script>
 
 </body>
